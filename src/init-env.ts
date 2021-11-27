@@ -3,6 +3,8 @@ import path from "path";
 import Joi from "joi";
 import dotenv from "dotenv";
 
+const ENVIRONMENT_DEFINITION_FILE = "window.env.js";
+
 const baseSchema = Joi.object({
   REACT_APP_CLIENT_VERSION: Joi.string().required(),
   PUBLIC_URL: Joi.string().required().allow("").empty(""),
@@ -37,7 +39,11 @@ export default async function initEnv(
     }
   }
 
-  const finalDestination = path.join(process.cwd(), destinationFilePath);
+  const finalDestination = path.join(
+    process.cwd(),
+    destinationFilePath,
+    ENVIRONMENT_DEFINITION_FILE
+  );
   const finalSchema = path.join(process.cwd(), schemaPath);
   console.log(`Writing window env file to ${finalDestination}`);
   console.log(`Attempting to load schema from ${finalSchema}`);

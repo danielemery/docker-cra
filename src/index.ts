@@ -1,3 +1,5 @@
+import { Command } from "commander";
+
 import initialiseEnvironmentVariables from "./init-env";
 
 async function processCommands(
@@ -12,14 +14,43 @@ async function processCommands(
   );
 }
 
+function runOrTimeout(command: Promise<void>) {
+  Promise.race([command])
+    .then(() => {
+      process.exit(0);
+    })
+    .catch((err) => {
+      console.error(err);
+      process.exit(1);
+    });
+}
+
 export function cli(args: string[]) {
-  // TODO parse environment variables properly.
-  const initialiseEnvironmentVariablesPromise = processCommands(args[2], args[3], "local");
-  // TODO also set client version
-  Promise.race([initialiseEnvironmentVariablesPromise]).then(() => {
-    process.exit(0);
-  }).catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
+  const program = new Command();
+  program
+    .requiredOption(
+      "-d, --destination [string]",
+      "path to the destination folder to dump the window.env.js file."
+    )
+    .option(
+      "-s, --schema [string]",
+      "path to the joi schema used to validate custom environment variables."
+    )
+    .option(
+      "--local [boolean]",
+      "specify if a local build - will load variables from .env",
+      false
+    )
+    .description("Prepare the create-react-app project for docker");
+
+  program.parse();
+
+  const options = program.opts();
+
+  const initialiseEnvironmentVariablesPromise = processCommands(
+    options.destination,
+    options.schema,
+    options.local ? "local" : "docker"
+  );
+  runOrTimeout(initialiseEnvironmentVariablesPromise);
 }
