@@ -1,4 +1,4 @@
-import { writeFile } from 'fs';
+import { promises as fs } from 'fs';
 import path from 'path';
 import Joi from 'joi';
 import dotenv from 'dotenv';
@@ -60,17 +60,11 @@ export default async function initEnv(
     (entry) => `${entry[0]}:'${entry[1]}'`,
   );
   const windowVariablesToBeWrittenToFile = `window.env={${mappedWindowVariables}};`;
-  await new Promise<void>((resolve, reject) => {
-    writeFile(
-      finalDestination,
-      windowVariablesToBeWrittenToFile,
-      'utf8',
-      (err) => {
-        if (err) reject(err);
-        else resolve();
-      },
-    );
-  });
+  await fs.writeFile(
+    finalDestination,
+    windowVariablesToBeWrittenToFile,
+    'utf8',
+  );
 
   console.log('Environment variables initialised successfully');
 }

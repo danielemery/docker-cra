@@ -3,21 +3,15 @@ import { promises as fs } from 'fs';
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
-function findAndReplaceInFile(
+async function findAndReplaceInFile(
   filePath: string,
   fromSearchValue: RegExp | string,
   toSearchFile: string,
 ) {
-  return fs
-    .readFile(filePath, 'utf8')
-    .then((data) => {
-      const result = data.replace(fromSearchValue, toSearchFile);
-
-      return fs.writeFile(filePath, result, 'utf8');
-    })
-    .then(() => {
-      console.log(`======== ${filePath} updated ========`);
-    });
+  const data = await fs.readFile(filePath, 'utf8');
+  const result = data.replace(fromSearchValue, toSearchFile);
+  await fs.writeFile(filePath, result, 'utf8');
+  console.log(`======== ${filePath} updated ========`);
 }
 
 export default async function setClientVersion() {

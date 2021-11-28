@@ -1,12 +1,14 @@
 import { Command } from 'commander';
 
 import initialiseEnvironmentVariables from './init-env';
+import performPreChecks from './pre-checks';
 
 async function processCommands(
   destinationFilePath: string,
   schemaPath: string,
   environmentType: 'local' | 'docker',
 ): Promise<void> {
+  await performPreChecks(environmentType === 'local');
   await initialiseEnvironmentVariables(
     destinationFilePath,
     schemaPath,
