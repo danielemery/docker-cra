@@ -2,10 +2,11 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import Joi from 'joi';
 import dotenv from 'dotenv';
+import DockerCRABaseEnvType from './base-environment-type';
 
 const ENVIRONMENT_DEFINITION_FILE = 'window.env.js';
 
-const baseSchema = Joi.object({
+const baseSchema = Joi.object<DockerCRABaseEnvType>({
   REACT_APP_CLIENT_VERSION: Joi.string().required(),
   PUBLIC_URL: Joi.string().required().allow('').empty(''),
 });

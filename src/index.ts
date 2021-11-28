@@ -56,3 +56,5 @@ export function cli(args: string[]) {
   );
   runOrTimeout(initialiseEnvironmentVariablesPromise);
 }
+
+export { default as DockerCRABaseEnvType } from './base-environment-type';
