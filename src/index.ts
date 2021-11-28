@@ -1,17 +1,32 @@
-import { Command } from "commander";
+import { Command } from 'commander';
 
-import initialiseEnvironmentVariables from "./init-env";
+import initialiseEnvironmentVariables from './init-env';
+import performPreChecks from './pre-checks';
+import setClientVersion from './set-client-version';
 
 async function processCommands(
   destinationFilePath: string,
   schemaPath: string,
-  environmentType: "local" | "docker"
+  environmentType: 'local' | 'docker',
 ): Promise<void> {
+  await performPreChecks(environmentType === 'local');
   await initialiseEnvironmentVariables(
     destinationFilePath,
     schemaPath,
-    environmentType
+    environmentType,
   );
+  if (environmentType === 'docker') {
+    if (
+      process.env.REACT_APP_CLIENT_VERSION !== undefined &&
+      process.env.REACT_APP_CLIENT_VERSION.trim() !== ''
+    ) {
+      await setClientVersion(process.env.REACT_APP_CLIENT_VERSION);
+    } else {
+      console.log(
+        'Not setting client version: REACT_APP_CLIENT_VERSION is not defined',
+      );
+    }
+  }
 }
 
 function runOrTimeout(command: Promise<void>) {
@@ -29,19 +44,19 @@ export function cli(args: string[]) {
   const program = new Command();
   program
     .requiredOption(
-      "-d, --destination [string]",
-      "path to the destination folder to dump the window.env.js file."
+      '-d, --destination [string]',
+      'path to the destination folder to dump the window.env.js file.',
     )
     .option(
-      "-s, --schema [string]",
-      "path to the joi schema used to validate custom environment variables."
+      '-s, --schema [string]',
+      'path to the joi schema used to validate custom environment variables.',
     )
     .option(
-      "--local [boolean]",
-      "specify if a local build - will load variables from .env",
-      false
+      '--local [boolean]',
+      'specify if a local build - will load variables from .env',
+      false,
     )
-    .description("Prepare the create-react-app project for docker");
+    .description('Prepare the create-react-app project for docker');
 
   program.parse();
 
@@ -50,7 +65,9 @@ export function cli(args: string[]) {
   const initialiseEnvironmentVariablesPromise = processCommands(
     options.destination,
     options.schema,
-    options.local ? "local" : "docker"
+    options.local ? 'local' : 'docker',
   );
   runOrTimeout(initialiseEnvironmentVariablesPromise);
 }
+
+export { default as DockerCRABaseEnvType } from './base-environment-type';
