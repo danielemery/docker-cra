@@ -1,18 +1,18 @@
-import { writeFile } from "fs";
-import path from "path";
-import Joi from "joi";
-import dotenv from "dotenv";
+import { writeFile } from 'fs';
+import path from 'path';
+import Joi from 'joi';
+import dotenv from 'dotenv';
 
-const ENVIRONMENT_DEFINITION_FILE = "window.env.js";
+const ENVIRONMENT_DEFINITION_FILE = 'window.env.js';
 
 const baseSchema = Joi.object({
   REACT_APP_CLIENT_VERSION: Joi.string().required(),
-  PUBLIC_URL: Joi.string().required().allow("").empty(""),
+  PUBLIC_URL: Joi.string().required().allow('').empty(''),
 });
 
 function validateEnvironmentVariables<T>(
   schema: Joi.Schema<T>,
-  environmentVariables: any
+  environmentVariables: any,
 ): T {
   const joiResult = schema.validate(environmentVariables, {
     allowUnknown: true,
@@ -30,9 +30,9 @@ function validateEnvironmentVariables<T>(
 export default async function initEnv(
   destinationFilePath: string,
   schemaPath: string,
-  environmentType: "local" | "docker"
+  environmentType: 'local' | 'docker',
 ) {
-  if (environmentType === "local") {
+  if (environmentType === 'local') {
     const result = dotenv.config();
     if (result.error) {
       throw result.error;
@@ -42,35 +42,35 @@ export default async function initEnv(
   const finalDestination = path.join(
     process.cwd(),
     destinationFilePath,
-    ENVIRONMENT_DEFINITION_FILE
+    ENVIRONMENT_DEFINITION_FILE,
   );
   const finalSchema = path.join(process.cwd(), schemaPath);
   console.log(`Writing window env file to ${finalDestination}`);
   console.log(`Attempting to load schema from ${finalSchema}`);
   const providedSchema = require(finalSchema);
   const envSchema = baseSchema.concat(providedSchema);
-  console.log("Validating environment variables");
+  console.log('Validating environment variables');
   const validatedWindowVariables = validateEnvironmentVariables(
     envSchema,
-    process.env
+    process.env,
   );
 
-  console.log("Writing environment variables to file.");
+  console.log('Writing environment variables to file.');
   const mappedWindowVariables = Object.entries(validatedWindowVariables).map(
-    (entry) => `${entry[0]}:'${entry[1]}'`
+    (entry) => `${entry[0]}:'${entry[1]}'`,
   );
   const windowVariablesToBeWrittenToFile = `window.env={${mappedWindowVariables}};`;
   await new Promise<void>((resolve, reject) => {
     writeFile(
       finalDestination,
       windowVariablesToBeWrittenToFile,
-      "utf8",
+      'utf8',
       (err) => {
         if (err) reject(err);
         else resolve();
-      }
+      },
     );
   });
 
-  console.log("Environment variables initialised successfully");
+  console.log('Environment variables initialised successfully');
 }

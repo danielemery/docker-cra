@@ -1,20 +1,16 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-console */
-/* eslint-disable no-plusplus */
 import { promises as fs } from 'fs';
 
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
-async function asyncForEach<T>(array: T[], callback: (value: T, index: number, allRecords: T[]) => Promise<void>) {
-  for (let index = 0; index < array.length; index++) {
-    await callback(array[index], index, array);
-  }
-}
-
-function findAndReplaceInFile(filePath: string, fromSearchValue: RegExp | string, toSearchFile: string) {
-  return fs.readFile(filePath, 'utf8')
-    .then(data => {
+function findAndReplaceInFile(
+  filePath: string,
+  fromSearchValue: RegExp | string,
+  toSearchFile: string,
+) {
+  return fs
+    .readFile(filePath, 'utf8')
+    .then((data) => {
       const result = data.replace(fromSearchValue, toSearchFile);
 
       return fs.writeFile(filePath, result, 'utf8');
@@ -24,13 +20,19 @@ function findAndReplaceInFile(filePath: string, fromSearchValue: RegExp | string
     });
 }
 
-(async () => {
+export default async function setClientVersion() {
   try {
-    if (process.env.REACT_APP_CLIENT_VERSION !== undefined && process.env.REACT_APP_CLIENT_VERSION.trim() !== '') {
-      console.log(`REACT_APP_CLIENT_VERSION: ${process.env.REACT_APP_CLIENT_VERSION}`);
+    if (
+      process.env.REACT_APP_CLIENT_VERSION !== undefined &&
+      process.env.REACT_APP_CLIENT_VERSION.trim() !== ''
+    ) {
+      console.log(
+        `REACT_APP_CLIENT_VERSION: ${process.env.REACT_APP_CLIENT_VERSION}`,
+      );
       console.log(`PUBLIC_URL: ${process.env.PUBLIC_URL}`);
 
-      const publicUrl = process.env.PUBLIC_URL === '/' ? '' : process.env.PUBLIC_URL;
+      const publicUrl =
+        process.env.PUBLIC_URL === '/' ? '' : process.env.PUBLIC_URL;
 
       // 1- Create folder for assets.
       await exec(`mkdir -p build/${process.env.REACT_APP_CLIENT_VERSION}`);
@@ -46,33 +48,49 @@ function findAndReplaceInFile(filePath: string, fromSearchValue: RegExp | string
         `./build/${process.env.REACT_APP_CLIENT_VERSION}/service-worker.js`,
         `./build/${process.env.REACT_APP_CLIENT_VERSION}/asset-manifest.json`,
       ];
-      await asyncForEach(files, file =>
-        findAndReplaceInFile(file, /@@publicUrl\/@@buildTag\//g, `${publicUrl}/${process.env.REACT_APP_CLIENT_VERSION}/`),
+      await Promise.all(
+        files.map((file) =>
+          findAndReplaceInFile(
+            file,
+            /@@publicUrl\/@@buildTag\//g,
+            `${publicUrl}/${process.env.REACT_APP_CLIENT_VERSION}/`,
+          ),
+        ),
       );
 
       // 4- Rewrite folder structure name in all js files
-      const jsFileNames = await fs.readdir(`./build/${process.env.REACT_APP_CLIENT_VERSION}/static/js`);
-      await asyncForEach(jsFileNames, file =>
-        findAndReplaceInFile(
-          `./build/${process.env.REACT_APP_CLIENT_VERSION}/static/js/${file}`,
-          /@@publicUrl\/@@buildTag\/static\//g,
-          `${publicUrl}/${process.env.REACT_APP_CLIENT_VERSION}/static/`,
+      const jsFileNames = await fs.readdir(
+        `./build/${process.env.REACT_APP_CLIENT_VERSION}/static/js`,
+      );
+      await Promise.all(
+        jsFileNames.map((file) =>
+          findAndReplaceInFile(
+            `./build/${process.env.REACT_APP_CLIENT_VERSION}/static/js/${file}`,
+            /@@publicUrl\/@@buildTag\/static\//g,
+            `${publicUrl}/${process.env.REACT_APP_CLIENT_VERSION}/static/`,
+          ),
         ),
       );
 
       // 5- Rewrite folder structure name in all css files
-      const cssFileNames = await fs.readdir(`./build/${process.env.REACT_APP_CLIENT_VERSION}/static/css`);
-      await asyncForEach(cssFileNames, file =>
-        findAndReplaceInFile(
-          `./build/${process.env.REACT_APP_CLIENT_VERSION}/static/css/${file}`,
-          /@@publicUrl\/@@buildTag\/static\//g,
-          `${publicUrl}/${process.env.REACT_APP_CLIENT_VERSION}/static/`,
+      const cssFileNames = await fs.readdir(
+        `./build/${process.env.REACT_APP_CLIENT_VERSION}/static/css`,
+      );
+      await Promise.all(
+        cssFileNames.map((file) =>
+          findAndReplaceInFile(
+            `./build/${process.env.REACT_APP_CLIENT_VERSION}/static/css/${file}`,
+            /@@publicUrl\/@@buildTag\/static\//g,
+            `${publicUrl}/${process.env.REACT_APP_CLIENT_VERSION}/static/`,
+          ),
         ),
       );
     } else {
-      console.log('Not setting client version: REACT_APP_CLIENT_VERSION is not defined')
+      console.log(
+        'Not setting client version: REACT_APP_CLIENT_VERSION is not defined',
+      );
     }
   } catch (err) {
     console.log(err);
   }
-})();
+}
