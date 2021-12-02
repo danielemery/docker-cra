@@ -4,6 +4,8 @@ import initialiseEnvironmentVariables from './init-env';
 import performPreChecks from './pre-checks';
 import setClientVersion from './set-client-version';
 
+const pjson = require('../package.json');
+
 async function processCommands(
   destinationFilePath: string,
   schemaPath: string,
@@ -56,6 +58,7 @@ export function cli(args: string[]) {
       'specify if a local build - will load variables from .env',
       false,
     )
+    .version(pjson.version)
     .description('Prepare the create-react-app project for docker');
 
   program.parse();
