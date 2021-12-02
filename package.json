@@ -1,6 +1,6 @@
 {
   "name": "docker-cra",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "description": "npm cli utility to assist serving create-react-app projects out of a docker container",
   "main": "dist/index.js",
   "bin": {
