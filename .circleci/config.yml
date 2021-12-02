@@ -25,7 +25,7 @@ jobs:
             - package.json
             - package-lock.json
 
-  publish-beta:
+  publish-npm-beta:
     docker:
       - image: circleci/node:16
     steps:
@@ -41,7 +41,31 @@ jobs:
           command: |
             npm publish --access public --tag beta
 
-  publish:
+  publish-docker-beta:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - run:
+          name: Setup Environment Variables
+          command: |
+            REGISTRY=demery/docker-cra
+            echo $REGISTRY
+            echo "export REGISTRY=$REGISTRY" >> $BASH_ENV
+            TAG=$CIRCLE_TAG
+            echo $TAG
+            echo "export TAG=$TAG" >> $BASH_ENV
+      - run:
+          name: Run Docker Build
+          command: |
+            docker build -t $REGISTRY:$TAG .
+      - run:
+          name: Push Docker Image
+          command: |
+            echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
+            docker push $REGISTRY:$TAG
+
+  publish-npm:
     docker:
       - image: circleci/node:16
     steps:
@@ -57,6 +81,32 @@ jobs:
           command: |
             npm publish --access public
 
+  publish-docker:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - run:
+          name: Setup Environment Variables
+          command: |
+            REGISTRY=demery/docker-cra
+            echo $REGISTRY
+            echo "export REGISTRY=$REGISTRY" >> $BASH_ENV
+            TAG=$CIRCLE_TAG
+            echo $TAG
+            echo "export TAG=$TAG" >> $BASH_ENV
+      - run:
+          name: Run Docker Build
+          command: |
+            docker build -t $REGISTRY:$TAG .
+            docker tag $REGISTRY:$TAG $REGISTRY:latest
+      - run:
+          name: Push Docker Image
+          command: |
+            echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
+            docker push $REGISTRY:$TAG
+            docker push $REGISTRY:latest
+
 workflows:
   version: 2
   ci:
@@ -65,7 +115,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - publish-beta:
+      - publish-npm-beta:
           requires:
             - test
           filters:
@@ -73,8 +123,24 @@ workflows:
               only: /v([0-9])*.([0-9])*.([0-9])*-.*/
             branches:
               ignore: /.*/
-      - publish:
+      - publish-npm:
           requires:
+            - test
+          filters:
+            tags:
+              only: /v([0-9])*.([0-9])*.([0-9])*/
+            branches:
+              ignore: /.*/
+      - publish-docker-beta:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /v([0-9])*.([0-9])*.([0-9])*-.*/
+            branches:
+              ignore: /.*/
+      - publish-docker:
+           requires:
             - test
           filters:
             tags:
