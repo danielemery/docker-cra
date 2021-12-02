@@ -2,9 +2,9 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import Joi from 'joi';
 import dotenv from 'dotenv';
-import DockerCRABaseEnvType from './base-environment-type';
 
-const ENVIRONMENT_DEFINITION_FILE = 'window.env.js';
+import DockerCRABaseEnvType from './base-environment-type';
+import { ENVIRONMENT_DEFINITION_FILE_NAME } from './constants';
 
 const baseSchema = Joi.object<DockerCRABaseEnvType>({
   REACT_APP_CLIENT_VERSION: Joi.string().required(),
@@ -43,7 +43,7 @@ export default async function initEnv(
   const finalDestination = path.join(
     process.cwd(),
     destinationFilePath,
-    ENVIRONMENT_DEFINITION_FILE,
+    ENVIRONMENT_DEFINITION_FILE_NAME,
   );
   const finalSchema = path.join(process.cwd(), schemaPath);
   console.log(`Writing window env file to ${finalDestination}`);
