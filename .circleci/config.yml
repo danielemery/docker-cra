@@ -140,7 +140,7 @@ workflows:
             branches:
               ignore: /.*/
       - publish-docker:
-           requires:
+          requires:
             - test
           filters:
             tags:
