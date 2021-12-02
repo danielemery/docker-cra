@@ -12,12 +12,9 @@ RUN ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
 # Set working directory
 WORKDIR /usr/app
 
-# Install dependencies
-COPY ./package*.json ./
-RUN npm ci --production
-
 # Install docker-cra package globally
 RUN npm install -g docker-cra@"${DOCKER_CRA_VERSION}"
+COPY ./node_modules ./node_modules
 
 # Run version to validate
 RUN docker-cra --version
