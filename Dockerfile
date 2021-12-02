@@ -10,3 +10,6 @@ RUN ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
 
 WORKDIR /usr/app
 RUN npm i joi
+
+# Startup script
+COPY ./docker-cra-entrypoint.sh /docker-entrypoint.d
