@@ -56,6 +56,10 @@ jobs:
             echo $TAG
             echo "export TAG=$TAG" >> $BASH_ENV
       - run:
+          name: Run NPM install
+          command: |
+            npm ci --production
+      - run:
           name: Run Docker Build
           command: |
             docker build -t $REGISTRY:$TAG --build-arg DOCKER_CRA_VERSION=$TAG .
@@ -95,6 +99,10 @@ jobs:
             TAG=$CIRCLE_TAG
             echo $TAG
             echo "export TAG=$TAG" >> $BASH_ENV
+      - run:
+          name: Run NPM install
+          command: |
+            npm ci --production
       - run:
           name: Run Docker Build
           command: |
