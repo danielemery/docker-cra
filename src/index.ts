@@ -2,6 +2,7 @@ import { Command } from 'commander';
 
 import initialiseEnvironmentVariables from './init-env';
 import performPreChecks from './pre-checks';
+import setClientVersion from './set-client-version';
 
 const pjson = require('../package.json');
 
@@ -16,6 +17,18 @@ async function processCommands(
     schemaPath,
     environmentType,
   );
+  if (environmentType === 'docker') {
+    if (
+      process.env.REACT_APP_CLIENT_VERSION !== undefined &&
+      process.env.REACT_APP_CLIENT_VERSION.trim() !== ''
+    ) {
+      await setClientVersion(process.env.REACT_APP_CLIENT_VERSION);
+    } else {
+      console.log(
+        'Not setting client version: REACT_APP_CLIENT_VERSION is not defined',
+      );
+    }
+  }
 }
 
 function runOrTimeout(command: Promise<void>) {
