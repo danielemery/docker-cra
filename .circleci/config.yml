@@ -58,7 +58,7 @@ jobs:
       - run:
           name: Run Docker Build
           command: |
-            docker build -t $REGISTRY:$TAG .
+            docker build -t $REGISTRY:$TAG --build-arg DOCKER_CRA_VERSION=$TAG .
       - run:
           name: Push Docker Image
           command: |
@@ -98,7 +98,7 @@ jobs:
       - run:
           name: Run Docker Build
           command: |
-            docker build -t $REGISTRY:$TAG .
+            docker build -t $REGISTRY:$TAG --build-arg DOCKER_CRA_VERSION=$TAG .
             docker tag $REGISTRY:$TAG $REGISTRY:latest
       - run:
           name: Push Docker Image
@@ -134,6 +134,7 @@ workflows:
       - publish-docker-beta:
           requires:
             - test
+            - publish-npm-beta
           filters:
             tags:
               only: /v([0-9])*.([0-9])*.([0-9])*-.*/
@@ -142,6 +143,7 @@ workflows:
       - publish-docker:
           requires:
             - test
+            - publish-npm
           filters:
             tags:
               only: /v([0-9])*.([0-9])*.([0-9])*/
