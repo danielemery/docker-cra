@@ -24,6 +24,7 @@ jobs:
             - bin/*
             - package.json
             - package-lock.json
+            - README.md
 
   publish-npm-beta:
     docker:
