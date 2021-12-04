@@ -9,6 +9,9 @@ COPY --from=node /usr/local/bin/node /usr/local/bin/node
 RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 RUN ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
 
+# Override default nginx config
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+
 # Set working directory
 WORKDIR /usr/app
 
