@@ -28,10 +28,10 @@ For a working example see the [docker-cra-example](https://github.com/danielemer
 
 A joi schema is required to validate incoming environment variables. This serves two purposes:
 
-1. As window.env.js is public the schema ensures nothing sensitive ends up in the file
-2. As we have no validation of env variable types at compile type, we need to ensure they are correctly provided at runtime
+1. As `window.env.js` is public, the schema ensures nothing sensitive ends up in the file.
+2. As we have no validation of env variable types at compile type, we need to ensure they are provided and correctly typed at runtime.
 
-A file called `.env.schema.js` should be created in the root of the project with any environment variables defined. `docker-cra` also supports the following built-in environment variables:
+A file called `env.schema.js` should be created in the root of the project with all required environment variables defined. In additional to those defined, `docker-cra` automatically supports the following environment variables:
 
 - `REACT_APP_CLIENT_VERSION` (required string)
 - `PUBLIC_URL` (serve path - or leave blank to serve at `/`)
@@ -51,7 +51,7 @@ COPY env.schema.js ./env.schema.js
 COPY build /usr/share/nginx/html
 ```
 
-It's recommended to match the version of docker-cra npm version with the docker-cra docker tag version.
+It's recommended to match the version of `docker-cra` npm version with the `docker-cra` docker tag version to ensure local development more closely mirrors docker deploys.
 
 ## To Do
 
