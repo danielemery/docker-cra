@@ -83,7 +83,6 @@ export default async function initEnv(
     environmentType === 'docker' ? `${environmentFileHash}.` : '';
   const environmentFileName = `${fileNamePrefix}${ENVIRONMENT_DEFINITION_FILE_NAME}`;
   const envFileDestination = path.join(
-    process.cwd(),
     destinationFilePath,
     environmentFileName,
   );
@@ -96,7 +95,10 @@ export default async function initEnv(
 
   // If required write result to index.html
   if (environmentType === 'docker') {
-    const indexPath = path.join(process.cwd(), getIndexPath(environmentType));
+    const indexPath = path.join(
+      destinationFilePath,
+      getIndexPath(environmentType),
+    );
     const publicUrl =
       process.env.PUBLIC_URL === '/' ? '' : process.env.PUBLIC_URL;
     const expectedIndexScript = REQUIRED_INDEX_SCRIPT.replace(

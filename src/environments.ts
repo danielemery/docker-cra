@@ -3,7 +3,7 @@ export type EnvironmentType = 'local' | 'docker';
 export function getIndexPath(environmentType: EnvironmentType) {
   switch (environmentType) {
     case 'docker':
-      return 'build/index.html';
+      return 'index.html';
     case 'local':
       return 'public/index.html';
     default:
