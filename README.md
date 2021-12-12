@@ -56,3 +56,31 @@ It's recommended to match the version of docker-cra npm version with the docker-
 ## To Do
 
 - Support version bumping the app and supporting old chunks that client's might not have loaded
+
+## Local Development
+
+Building and testing locally is best done along with the companion repo [docker-cra-example](https://github.com/danielemery/docker-cra-example).
+
+In this repo you can run the following commands to make the local build available to the example project.
+
+```sh
+npm run build && npm link
+docker build -t docker-cra:latest .
+```
+
+And then in the example run the following to consume and test.
+
+```sh
+# Install dependencies
+npm ci
+npm link docker-cra
+
+# Local dev test
+npm start
+
+# Docker test
+# Note: First update Dockerfile to use the local build with `FROM docker-cra`
+npm run build
+docker build -t docker-cra-example .
+docker run --env-file=.env -p 8080:80 docker-cra-example
+```
