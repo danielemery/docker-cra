@@ -2,7 +2,7 @@ import { Command } from 'commander';
 
 import initialiseEnvironmentVariables from './init-env';
 import performPreChecks from './pre-checks';
-import { EnvironmentType } from './types';
+import { EnvironmentType } from './environments';
 
 const pjson = require('../package.json');
 

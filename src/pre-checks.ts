@@ -1,8 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import { EnvironmentType } from './types';
-
-const REQUIRED_INDEX_SCRIPT = `<script src="%PUBLIC_URL%/window.env.js"></script>`;
+import { REQUIRED_INDEX_SCRIPT } from './constants';
+import { EnvironmentType } from './environments';
 
 export default async function performPreChecks(
   environmentType: EnvironmentType,
