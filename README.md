@@ -77,10 +77,4 @@ npm link docker-cra
 
 # Local dev test
 npm start
-
-# Docker test
-# Note: First update Dockerfile to use the local build with `FROM docker-cra`
-npm run build
-docker build -t docker-cra-example .
-docker run --env-file=.env -p 8080:80 docker-cra-example
 ```
