@@ -2,15 +2,16 @@ import { Command } from 'commander';
 
 import initialiseEnvironmentVariables from './init-env';
 import performPreChecks from './pre-checks';
+import { EnvironmentType } from './environments';
 
 const pjson = require('../package.json');
 
 async function processCommands(
   destinationFilePath: string,
   schemaPath: string,
-  environmentType: 'local' | 'docker',
+  environmentType: EnvironmentType,
 ): Promise<void> {
-  await performPreChecks(environmentType === 'local');
+  await performPreChecks(environmentType);
   await initialiseEnvironmentVariables(
     destinationFilePath,
     schemaPath,
@@ -29,7 +30,7 @@ function runOrTimeout(command: Promise<void>) {
     });
 }
 
-export function cli(args: string[]) {
+export function cli() {
   const program = new Command();
   program
     .requiredOption(
