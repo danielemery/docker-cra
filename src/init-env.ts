@@ -9,7 +9,7 @@ import {
   ENVIRONMENT_DEFINITION_FILE_NAME,
   REQUIRED_INDEX_SCRIPT,
 } from './constants';
-import { EnvironmentType, getIndexPath } from './environments';
+import { EnvironmentType, getIndexPath, ProjectType } from './environments';
 
 const baseSchema = Joi.object<DockerCRABaseEnvType>({
   REACT_APP_CLIENT_VERSION: Joi.string().required(),
@@ -47,6 +47,7 @@ export default async function initEnv(
   destinationFilePath: string,
   schemaPath: string,
   environmentType: EnvironmentType,
+  projectType: ProjectType,
 ) {
   // Local builds should read from `.env` file if available.
   if (environmentType === 'local') {
@@ -97,7 +98,7 @@ export default async function initEnv(
   if (environmentType === 'docker') {
     const indexPath = path.join(
       destinationFilePath,
-      getIndexPath(environmentType),
+      getIndexPath(environmentType, projectType),
     );
     const publicUrl =
       process.env.PUBLIC_URL === '/' ? '' : process.env.PUBLIC_URL;

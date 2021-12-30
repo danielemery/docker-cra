@@ -1,15 +1,19 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { REQUIRED_INDEX_SCRIPT } from './constants';
-import { EnvironmentType } from './environments';
+import { EnvironmentType, ProjectType, getIndexPath } from './environments';
 
 export default async function performPreChecks(
   environmentType: EnvironmentType,
+  projectType: ProjectType,
 ) {
   switch (environmentType) {
     case 'local':
       try {
-        const indexPath = path.join(process.cwd(), `./public/index.html`);
+        const indexPath = path.join(
+          process.cwd(),
+          getIndexPath(environmentType, projectType),
+        );
         const file = await fs.readFile(indexPath, 'utf8');
         if (file.indexOf(REQUIRED_INDEX_SCRIPT) < 0) {
           throw new Error(

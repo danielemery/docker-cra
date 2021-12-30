@@ -1,8 +1,8 @@
-import { Command } from 'commander';
+import { Command, Option } from 'commander';
 
 import initialiseEnvironmentVariables from './init-env';
 import performPreChecks from './pre-checks';
-import { EnvironmentType } from './environments';
+import { EnvironmentType, ProjectType } from './environments';
 
 const pjson = require('../package.json');
 
@@ -10,12 +10,14 @@ async function processCommands(
   destinationFilePath: string,
   schemaPath: string,
   environmentType: EnvironmentType,
+  projectType: ProjectType,
 ): Promise<void> {
-  await performPreChecks(environmentType);
+  await performPreChecks(environmentType, projectType);
   await initialiseEnvironmentVariables(
     destinationFilePath,
     schemaPath,
     environmentType,
+    projectType,
   );
 }
 
@@ -41,6 +43,11 @@ export function cli() {
       '-s, --schema [string]',
       'path to the joi schema used to validate custom environment variables.',
     )
+    .addOption(
+      new Option('-t, --type [string]', 'type of project being bootstrapped')
+        .defaultValue('react')
+        .choices(['react', 'vite']),
+    )
     .option(
       '--local [boolean]',
       'specify if a local build - will load variables from .env',
@@ -57,6 +64,7 @@ export function cli() {
     options.destination,
     options.schema,
     options.local ? 'local' : 'docker',
+    options.type,
   );
   runOrTimeout(initialiseEnvironmentVariablesPromise);
 }
