@@ -45,7 +45,7 @@ export function cli() {
     )
     .addOption(
       new Option('-t, --type [string]', 'type of project being bootstrapped')
-        .defaultValue('react')
+        .default('react')
         .choices(['react', 'vite']),
     )
     .option(
