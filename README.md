@@ -33,7 +33,7 @@ A joi schema is required to validate incoming environment variables. This serves
 
 A file called `env.schema.js` should be created in the root of the project with all required environment variables defined. In additional to those defined, `docker-cra` automatically supports the following environment variables:
 
-- `REACT_APP_CLIENT_VERSION` (required string)
+- `CLIENT_VERSION` (required string)
 - `PUBLIC_URL` (serve path - or leave blank to serve at `/`)
 
 ### Base Docker Image

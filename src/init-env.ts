@@ -5,14 +5,16 @@ import Joi from 'joi';
 import dotenv from 'dotenv';
 
 import DockerCRABaseEnvType from './base-environment-type';
+import { ENVIRONMENT_DEFINITION_FILE_NAME } from './constants';
 import {
-  ENVIRONMENT_DEFINITION_FILE_NAME,
-  REQUIRED_INDEX_SCRIPT,
-} from './constants';
-import { EnvironmentType, getIndexPath, ProjectType } from './environments';
+  EnvironmentType,
+  getIndexPath,
+  getRequiredIndexScript,
+  ProjectType,
+} from './environments';
 
 const baseSchema = Joi.object<DockerCRABaseEnvType>({
-  REACT_APP_CLIENT_VERSION: Joi.string().required(),
+  CLIENT_VERSION: Joi.string().required(),
   PUBLIC_URL: Joi.string().required().allow('').empty(''),
 });
 
@@ -102,7 +104,7 @@ export default async function initEnv(
     );
     const publicUrl =
       process.env.PUBLIC_URL === '/' ? '' : process.env.PUBLIC_URL;
-    const expectedIndexScript = REQUIRED_INDEX_SCRIPT.replace(
+    const expectedIndexScript = getRequiredIndexScript(projectType).replace(
       '%PUBLIC_URL%',
       publicUrl || '',
     );

@@ -21,3 +21,14 @@ export function getIndexPath(
       throw new Error(`Unknown environment type: ${environmentType}`);
   }
 }
+
+export function getRequiredIndexScript(projectType: ProjectType) {
+  switch (projectType) {
+    case 'vite':
+      return '<script src="<%= PUBLIC_URL %>window.env.js"></script>';
+    case 'react':
+      return `<script src="%PUBLIC_URL%/window.env.js"></script>`;
+    default:
+      throw new Error(`Unknown project type: ${projectType}`);
+  }
+}
