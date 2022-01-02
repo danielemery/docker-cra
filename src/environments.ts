@@ -32,7 +32,7 @@ export function getRequiredIndexScript(
     case 'local':
       switch (projectType) {
         case 'vite':
-          return '<script src="<%= PUBLIC_URL %>/window.env.js"></script>';
+          return '<script src="<%= PUBLIC_URL %>window.env.js"></script>';
         case 'react':
           return `<script src="%PUBLIC_URL%/window.env.js"></script>`;
         default:
