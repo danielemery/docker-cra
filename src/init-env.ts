@@ -60,9 +60,7 @@ export default async function initEnv(
   }
 
   // Perform environment variable validation.
-  const schemaLocation = schemaPath;
-  // const schemaLocation = path.join(process.cwd(), schemaPath);
-
+  const schemaLocation = path.join(process.cwd(), schemaPath);
   console.log(`Attempting to load schema from ${schemaLocation}`);
   const providedSchema = require(schemaLocation);
   const envSchema = baseSchema.concat(providedSchema);
