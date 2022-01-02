@@ -104,10 +104,10 @@ export default async function initEnv(
     );
     const publicUrl =
       process.env.PUBLIC_URL === '/' ? '' : process.env.PUBLIC_URL;
-    const expectedIndexScript = getRequiredIndexScript(projectType).replace(
-      '%PUBLIC_URL%',
-      publicUrl || '',
-    );
+    const expectedIndexScript = getRequiredIndexScript(
+      environmentType,
+      projectType,
+    ).replace('@@publicUrl', publicUrl || '');
     const desiredIndexScript = expectedIndexScript.replace(
       'window.env.js',
       environmentFileName,

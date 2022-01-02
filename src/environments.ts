@@ -22,13 +22,23 @@ export function getIndexPath(
   }
 }
 
-export function getRequiredIndexScript(projectType: ProjectType) {
-  switch (projectType) {
-    case 'vite':
-      return '<script src="<%= PUBLIC_URL %>window.env.js"></script>';
-    case 'react':
-      return `<script src="%PUBLIC_URL%/window.env.js"></script>`;
+export function getRequiredIndexScript(
+  environmentType: EnvironmentType,
+  projectType: ProjectType,
+) {
+  switch (environmentType) {
+    case 'docker':
+      return '<script src="@@publicUrl/window.env.js"></script>';
+    case 'local':
+      switch (projectType) {
+        case 'vite':
+          return '<script src="<%= PUBLIC_URL %>window.env.js"></script>';
+        case 'react':
+          return `<script src="%PUBLIC_URL%/window.env.js"></script>`;
+        default:
+          throw new Error(`Unknown project type: ${projectType}`);
+      }
     default:
-      throw new Error(`Unknown project type: ${projectType}`);
+      throw new Error(`Unknown environment type: ${environmentType}`);
   }
 }
