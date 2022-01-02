@@ -8,12 +8,13 @@ import {
 } from './environments';
 
 export default async function performPreChecks(
+  destinationFilePath: string,
   environmentType: EnvironmentType,
   projectType: ProjectType,
 ) {
   try {
     const indexPath = path.join(
-      process.cwd(),
+      destinationFilePath,
       getIndexPath(environmentType, projectType),
     );
     const file = await fs.readFile(indexPath, 'utf8');

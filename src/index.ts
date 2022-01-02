@@ -12,7 +12,7 @@ async function processCommands(
   environmentType: EnvironmentType,
   projectType: ProjectType,
 ): Promise<void> {
-  await performPreChecks(environmentType, projectType);
+  await performPreChecks(destinationFilePath, environmentType, projectType);
   await initialiseEnvironmentVariables(
     destinationFilePath,
     schemaPath,
