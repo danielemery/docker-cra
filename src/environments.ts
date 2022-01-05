@@ -28,7 +28,7 @@ export function getRequiredIndexScript(
 ) {
   switch (environmentType) {
     case 'docker':
-      return '<script src="@@publicUrl/window.env.js"></script>';
+      return '<script src="/@@publicUrl/window.env.js"></script>';
     case 'local':
       switch (projectType) {
         case 'vite':

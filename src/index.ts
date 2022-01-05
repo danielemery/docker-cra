@@ -59,11 +59,16 @@ export function cli() {
   program.parse();
 
   const options = program.opts();
+  const environment = options.local ? 'local' : 'docker';
+
+  console.log(
+    `docker-cra attempting to initialise a [${options.type}] project for a [${environment}] environment.`,
+  );
 
   const initialiseEnvironmentVariablesPromise = processCommands(
     options.destination,
     options.schema,
-    options.local ? 'local' : 'docker',
+    environment,
     options.type,
   );
   runOrTimeout(initialiseEnvironmentVariablesPromise);

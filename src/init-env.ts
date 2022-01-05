@@ -107,11 +107,10 @@ export default async function initEnv(
     const expectedIndexScript = getRequiredIndexScript(
       environmentType,
       projectType,
-    ).replace('@@publicUrl', publicUrl || '');
-    const desiredIndexScript = expectedIndexScript.replace(
-      'window.env.js',
-      environmentFileName,
     );
+    const desiredIndexScript = expectedIndexScript
+      .replace('window.env.js', environmentFileName)
+      .replace('/@@publicUrl', publicUrl ?? '');
     console.log(
       `Attempting to replace ${expectedIndexScript} with ${desiredIndexScript} in ${indexPath}`,
     );
