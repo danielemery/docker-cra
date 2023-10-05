@@ -1,3 +1,7 @@
+# Archived
+
+This project has been archived in favour of [docker-react](https://github.com/danielemery/docker-react) which has the same core goal but aims to be more automatic and use vite instead of create-react-app.
+
 ## Motivation
 
 This project was driven by two main goals:
